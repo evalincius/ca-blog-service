@@ -8,4 +8,6 @@ public interface BlogPostService {
     public BlogPost createBlogPost(BlogPost blogPost);
 
     public List<BlogPost> getAllBlogPosts();
+
+    public BlogPost updateBlogPost(BlogPost blogPost);
 }

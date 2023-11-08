@@ -21,5 +21,9 @@ public class BlogPostServiceImpl implements BlogPostService {
     public List<BlogPost> getAllBlogPosts() {
         return blogPostRepository.getAllBlogPosts();
     }
+    @Override
+    public BlogPost updateBlogPost(BlogPost blogPost) {
+        return blogPostRepository.updateBlogPost(blogPost);
+    }
 
 }
