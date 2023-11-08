@@ -6,10 +6,10 @@ CA Blog Service is an application that provides a set of REST APIs to manage a s
 
 ## Dependencies
 
-- Lombok
-- MongoDB
-- Actuator
-- Swagger
+-   Lombok
+-   MongoDB
+-   Actuator
+-   Swagger
 
 ## Application Architecture
 
@@ -21,4 +21,7 @@ TBA
 
 ## How To Start Local Mongo DB Instance
 
-TBA
+-   To install and launch MongoDB please follow official guide:
+    https://www.mongodb.com/docs/manual/administration/install-community/
+
+

@@ -1,0 +1,8 @@
+mongo:
+  isAuthenticated: false
+  host: TBA
+  port: 27017
+  database: cablog
+  authenticationDb: TBA
+  username: TBA
+  password: TBA
