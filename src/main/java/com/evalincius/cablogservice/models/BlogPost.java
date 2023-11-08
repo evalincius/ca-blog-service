@@ -3,6 +3,9 @@ package com.evalincius.cablogservice.models;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +13,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Document(collection = "blogpost")
 public class BlogPost {
+    @Id
     private String id;
     private String title;
     private String content;
