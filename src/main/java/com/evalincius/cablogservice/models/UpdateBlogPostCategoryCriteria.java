@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateBlogPostCategoryCriteria {
-    private int blogPostId;
-    private int categoryId;
+    private Integer blogPostId;
+    private Integer categoryId;
 }

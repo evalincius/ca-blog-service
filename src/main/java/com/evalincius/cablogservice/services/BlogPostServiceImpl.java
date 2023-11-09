@@ -37,6 +37,17 @@ public class BlogPostServiceImpl implements BlogPostService {
         setOrUpdateAuditData(blogPost.getId(), blogPost);
         return blogPostRepository.save(blogPost);
     }
+
+     private void setOrUpdateAuditData(Integer id, Audit audit){
+        ZonedDateTime nowInUTC = ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC);
+        if(id != null) {
+            audit.setUpdatedAt(nowInUTC);
+        }else{
+            audit.setCreatedAt(nowInUTC);
+            audit.setUpdatedAt(nowInUTC);
+        }
+    }
+
     /**
      * Persist category if not exists else return the category already persisted
      * @param currentCategory
@@ -54,16 +65,6 @@ public class BlogPostServiceImpl implements BlogPostService {
             }
         }
         return currentCategory;
-    }
-
-    private void setOrUpdateAuditData(Integer id, Audit audit){
-        ZonedDateTime nowInUTC = ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC);
-        if(id != null) {
-            audit.setUpdatedAt(nowInUTC);
-        }else{
-            audit.setCreatedAt(nowInUTC);
-            audit.setUpdatedAt(nowInUTC);
-        }
     }
 
     /**
@@ -107,6 +108,16 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
+    public List<BlogPost> getAllBlogPosts() {
+        return (List<BlogPost>) blogPostRepository.findAll();
+    }
+
+    @Override
+    public List<BlogPost> filterBlogPosts(BlogPostSearchCriteria blogPostSearchCriteria) {
+        return blogPostRepository.findByFilterValues(blogPostSearchCriteria.getTitle(), blogPostSearchCriteria.getCategories(), blogPostSearchCriteria.getTags());
+    }
+
+    @Override
     public BlogPost updateBlogPost(BlogPost blogPost) {
         return blogPostRepository.save(blogPost);
     }
@@ -124,13 +135,8 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public List<BlogPost> getAllBlogPosts() {
-        return (List<BlogPost>) blogPostRepository.findAll();
-    }
-
-    @Override
-    public List<BlogPost> filterBlogPosts(BlogPostSearchCriteria blogPostSearchCriteria) {
-        return blogPostRepository.findByFilterValues(blogPostSearchCriteria.getTitle(), blogPostSearchCriteria.getCategories(), blogPostSearchCriteria.getTags());
+    public void deleteBlogPost(Integer blogPostId) {
+        blogPostRepository.deleteById(blogPostId);
     }
 
 }

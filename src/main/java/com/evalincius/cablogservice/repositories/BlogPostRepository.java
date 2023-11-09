@@ -49,11 +49,6 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, Integer>  {
         WHERE ( :title IS NULL OR bp.title = :title )
         """, nativeQuery=true)
     public List<BlogPost> findByFilterValues(@Param("title") String title, @Param("categories") List<String> categories, @Param("tags") List<String> tags);
-
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE blog_post bp SET bp.category_id = :category_id WHERE bp.id = :id", nativeQuery=true)
-    public void updateCategory(@Param(value = "id") int id, @Param(value = "category_id") int categoryId);
 }
 
 

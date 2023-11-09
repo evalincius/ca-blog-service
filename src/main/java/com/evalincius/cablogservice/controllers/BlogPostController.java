@@ -3,7 +3,9 @@ package com.evalincius.cablogservice.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +18,7 @@ import com.evalincius.cablogservice.models.UpdateBlogPostCategoryCriteria;
 import com.evalincius.cablogservice.services.BlogPostService;
 
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("api/blogpost")
@@ -48,6 +51,11 @@ public class BlogPostController {
     @GetMapping()
     public List<BlogPost> filterBlogPosts(BlogPostSearchCriteria blogPostSearchCriteria) {
         return blogPostService.filterBlogPosts(blogPostSearchCriteria);
+    }
+
+    @DeleteMapping("/{blogPostId}")
+    public void deleteBlogPost(@PathVariable Integer blogPostId) {
+        blogPostService.deleteBlogPost(blogPostId);
     }
     
 }

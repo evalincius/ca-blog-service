@@ -10,10 +10,12 @@ public interface BlogPostService {
     public BlogPost createBlogPost(BlogPost blogPost);
 
     public List<BlogPost> getAllBlogPosts();
+       
+    public List<BlogPost> filterBlogPosts(BlogPostSearchCriteria blogPostSearchCriteria);
 
     public BlogPost updateBlogPost(BlogPost blogPost);
 
     public BlogPost updateBlogPostCategory(UpdateBlogPostCategoryCriteria updateBlogPostCategoryCriteria);
 
-    public List<BlogPost> filterBlogPosts(BlogPostSearchCriteria blogPostSearchCriteria);
+    public void deleteBlogPost(Integer blogPostId);
 }
