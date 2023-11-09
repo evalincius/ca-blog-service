@@ -2,11 +2,10 @@ server:
   port: 8090
 
 
-mongo:
-  isAuthenticated: false
-  host: localhost
-  port: 27017
-  database: cablog
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
 
 
 spring:

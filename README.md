@@ -28,6 +28,12 @@ TBA
 -   To install and launch MySQL please follow official guide:
     https://dev.mysql.com/doc/mysql-getting-started/en/
 
-    
+## Actuator 
+-   http://localhost:8090/actuator
+-   http://localhost:8090/actuator/health
+
+## Swagger
+-   http://localhost:8090/swagger-ui/index.html
+
 
 
