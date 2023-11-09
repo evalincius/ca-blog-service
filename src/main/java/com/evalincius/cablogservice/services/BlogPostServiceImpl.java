@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.evalincius.cablogservice.models.Author;
 import com.evalincius.cablogservice.models.BlogPost;
+import com.evalincius.cablogservice.models.BlogPostSearchCriteria;
 import com.evalincius.cablogservice.models.Category;
 import com.evalincius.cablogservice.models.Tag;
 import com.evalincius.cablogservice.repositories.BlogPostRepository;
@@ -85,12 +86,18 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
+    public BlogPost updateBlogPost(BlogPost blogPost) {
+        return blogPostRepository.save(blogPost);
+    }
+
+    @Override
     public List<BlogPost> getAllBlogPosts() {
         return (List<BlogPost>) blogPostRepository.findAll();
     }
+
     @Override
-    public BlogPost updateBlogPost(BlogPost blogPost) {
-        return blogPostRepository.save(blogPost);
+    public List<BlogPost> filterBlogPosts(BlogPostSearchCriteria blogPostSearchCriteria) {
+        return blogPostRepository.findByFilterValues(blogPostSearchCriteria.getTitle(), blogPostSearchCriteria.getCategories(), blogPostSearchCriteria.getTags());
     }
 
 }

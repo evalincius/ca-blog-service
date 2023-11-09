@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.evalincius.cablogservice.models.BlogPost;
+import com.evalincius.cablogservice.models.BlogPostSearchCriteria;
 import com.evalincius.cablogservice.services.BlogPostService;
 
 @RestController
@@ -35,6 +36,11 @@ public class BlogPostController {
     @GetMapping("/all")
     public List<BlogPost> getAllBlogPosts() {
         return blogPostService.getAllBlogPosts();
+    }
+
+    @GetMapping()
+    public List<BlogPost> filterBlogPosts(BlogPostSearchCriteria blogPostSearchCriteria) {
+        return blogPostService.filterBlogPosts(blogPostSearchCriteria);
     }
     
 }
