@@ -7,3 +7,13 @@ mongo:
   host: localhost
   port: 27017
   database: cablog
+
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/cablogdb?createDatabaseIfNotExist=true&useSSL=true
+    username: root
+    password: 
+  jpa:
+    hibernate:
+      ddl-auto: update

@@ -23,9 +23,11 @@ TBA
 
 TBA
 
-## How To Start Local Mongo DB Instance
+## How To Start Local MySQL Instance
 
--   To install and launch MongoDB please follow official guide:
-    https://www.mongodb.com/docs/manual/administration/install-community/
+-   To install and launch MySQL please follow official guide:
+    https://dev.mysql.com/doc/mysql-getting-started/en/
+
+    
 
 

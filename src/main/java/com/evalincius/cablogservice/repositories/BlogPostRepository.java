@@ -1,13 +1,11 @@
 package com.evalincius.cablogservice.repositories;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.evalincius.cablogservice.models.BlogPost;
 
-public interface BlogPostRepository {
-    public BlogPost createBlogPost(BlogPost blogPost);
-
-    public List<BlogPost> getAllBlogPosts();
-
-    public BlogPost updateBlogPost(BlogPost blogPost);
+@Repository
+public interface BlogPostRepository extends JpaRepository<BlogPost, Integer>  {
+    
 }
