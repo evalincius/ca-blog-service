@@ -6,13 +6,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 @Entity
-public class Author {
+public class Author extends Audit{
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;

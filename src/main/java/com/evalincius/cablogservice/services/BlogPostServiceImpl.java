@@ -1,15 +1,19 @@
 package com.evalincius.cablogservice.services;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.evalincius.cablogservice.models.Audit;
 import com.evalincius.cablogservice.models.Author;
 import com.evalincius.cablogservice.models.BlogPost;
 import com.evalincius.cablogservice.models.BlogPostSearchCriteria;
 import com.evalincius.cablogservice.models.Category;
 import com.evalincius.cablogservice.models.Tag;
+import com.evalincius.cablogservice.models.UpdateBlogPostCategoryCriteria;
 import com.evalincius.cablogservice.repositories.BlogPostRepository;
 
 import jakarta.persistence.EntityManager;
@@ -30,6 +34,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         blogPost.setAuthor(persistAuthorIfNotExists(blogPost.getAuthor()));
         blogPost.setCategory(persistCategoryIfNotExists(blogPost.getCategory()));
         blogPost.setTags(persistTagsIfNotExists(blogPost.getTags()));
+        setOrUpdateAuditData(blogPost.getId(), blogPost);
         return blogPostRepository.save(blogPost);
     }
     /**
@@ -38,8 +43,10 @@ public class BlogPostServiceImpl implements BlogPostService {
      * @return
      */
     private Category persistCategoryIfNotExists(Category currentCategory){
+       
         if(currentCategory != null){
             Category category = currentCategory.getId() != null ? entityManager.find(Category.class, currentCategory.getId()): null;
+            setOrUpdateAuditData(currentCategory.getId(), currentCategory);
             if(category != null ) {
                 currentCategory = category;
             } else{
@@ -48,6 +55,17 @@ public class BlogPostServiceImpl implements BlogPostService {
         }
         return currentCategory;
     }
+
+    private void setOrUpdateAuditData(Integer id, Audit audit){
+        ZonedDateTime nowInUTC = ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC);
+        if(id != null) {
+            audit.setUpdatedAt(nowInUTC);
+        }else{
+            audit.setCreatedAt(nowInUTC);
+            audit.setUpdatedAt(nowInUTC);
+        }
+    }
+
     /**
      * Persist author if not exists else return the author already persisted
      * @param currentAuthor
@@ -56,6 +74,8 @@ public class BlogPostServiceImpl implements BlogPostService {
     private Author persistAuthorIfNotExists(Author currentAuthor){
         if(currentAuthor != null){
             Author author = currentAuthor.getId() != null ? entityManager.find(Author.class, currentAuthor.getId()): null;
+            setOrUpdateAuditData(currentAuthor.getId(), currentAuthor);
+
             if(author != null ) {
                 currentAuthor = author;
             } else{
@@ -74,6 +94,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         if(listOfCurrentTags != null){
             listOfCurrentTags = listOfCurrentTags.stream().map(currentTag ->{
                 Tag tag = currentTag.getId() != null ? entityManager.find(Tag.class, currentTag.getId()): null;
+                setOrUpdateAuditData(currentTag.getId(), currentTag);
                 if(tag != null ) {
                     currentTag = tag;
                 } else{
@@ -87,6 +108,18 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public BlogPost updateBlogPost(BlogPost blogPost) {
+        return blogPostRepository.save(blogPost);
+    }
+
+    @Override
+    public BlogPost updateBlogPostCategory(UpdateBlogPostCategoryCriteria updateBlogPostCategoryCriteria) {
+        ZonedDateTime nowInUTC = ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC);
+        BlogPost blogPost = blogPostRepository.findById(updateBlogPostCategoryCriteria.getBlogPostId()).get();
+        Category category =  entityManager.find(Category.class, updateBlogPostCategoryCriteria.getCategoryId());
+        
+        blogPost.setCategory(category);
+        blogPost.setUpdatedAt(nowInUTC);
+   
         return blogPostRepository.save(blogPost);
     }
 
