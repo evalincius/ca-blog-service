@@ -46,7 +46,7 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, Integer>  {
                     GROUP BY bpt.blog_post_id
                 ) t ON bp.id = t.blog_post_id
             
-        WHERE ( :title IS NULL OR bp.title = :title )
+        WHERE ( :title IS NULL OR bp.title LIKE :title )
         """, nativeQuery=true)
     public List<BlogPost> findByFilterValues(@Param("title") String title, @Param("categories") List<String> categories, @Param("tags") List<String> tags);
 }

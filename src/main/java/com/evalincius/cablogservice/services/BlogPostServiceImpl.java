@@ -114,7 +114,8 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public List<BlogPost> filterBlogPosts(BlogPostSearchCriteria blogPostSearchCriteria) {
-        return blogPostRepository.findByFilterValues(blogPostSearchCriteria.getTitle(), blogPostSearchCriteria.getCategories(), blogPostSearchCriteria.getTags());
+        String tagsSearchString = blogPostSearchCriteria.getTitle() + "%";
+        return blogPostRepository.findByFilterValues(tagsSearchString, blogPostSearchCriteria.getCategories(), blogPostSearchCriteria.getTags());
     }
 
     @Override
