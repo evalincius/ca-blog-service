@@ -32,7 +32,7 @@ public class BlogPostController {
     }    
 
     @PutMapping()
-    public BlogPost updateBlogPost(@RequestBody BlogPost blogPost) {
+    public BlogPost updateBlogPost(@Valid @RequestBody BlogPost blogPost) {
         return blogPostService.updateBlogPost(blogPost);
     }
 
@@ -46,12 +46,10 @@ public class BlogPostController {
         return blogPostService.updateBlogPostTags(updateBlogPostCategoryCriteria);
     }
 
-
     @GetMapping("/all")
     public List<BlogPost> getAllBlogPosts() {
         return blogPostService.getAllBlogPosts();
     }
-
     @GetMapping()
     public List<BlogPost> filterBlogPosts(SearchBlogPostCriteria blogPostSearchCriteria) {
         return blogPostService.filterBlogPosts(blogPostSearchCriteria);
