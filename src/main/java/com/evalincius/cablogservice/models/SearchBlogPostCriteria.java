@@ -1,5 +1,8 @@
 package com.evalincius.cablogservice.models;
 
+
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateBlogPostCategoryCriteria {
-    private Integer blogPostId;
-    private Integer categoryId;
+public class SearchBlogPostCriteria {
+    private String title;
+    private List<String> categories;
+    private List<String> tags;
 }

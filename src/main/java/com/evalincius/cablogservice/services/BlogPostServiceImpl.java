@@ -2,6 +2,7 @@ package com.evalincius.cablogservice.services;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,10 @@ import org.springframework.stereotype.Service;
 import com.evalincius.cablogservice.models.Audit;
 import com.evalincius.cablogservice.models.Author;
 import com.evalincius.cablogservice.models.BlogPost;
-import com.evalincius.cablogservice.models.BlogPostSearchCriteria;
+import com.evalincius.cablogservice.models.SearchBlogPostCriteria;
 import com.evalincius.cablogservice.models.Category;
 import com.evalincius.cablogservice.models.Tag;
-import com.evalincius.cablogservice.models.UpdateBlogPostCategoryCriteria;
+import com.evalincius.cablogservice.models.UpdateBlogPostCriteria;
 import com.evalincius.cablogservice.repositories.BlogPostRepository;
 
 import jakarta.persistence.EntityManager;
@@ -51,7 +52,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     /**
      * Persist category if not exists else return the category already persisted
      * @param currentCategory
-     * @return
+     * @return Category
      */
     private Category persistCategoryIfNotExists(Category currentCategory){
        
@@ -70,7 +71,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     /**
      * Persist author if not exists else return the author already persisted
      * @param currentAuthor
-     * @return 
+     * @return Author
      */
     private Author persistAuthorIfNotExists(Author currentAuthor){
         if(currentAuthor != null){
@@ -89,7 +90,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     /**
      * Persist tags if not exists else return the list of tags already persisted
      * @param listOfCurrentTags
-     * @return
+     * @return List
      */
     private List<Tag> persistTagsIfNotExists(List<Tag> listOfCurrentTags){
         if(listOfCurrentTags != null){
@@ -113,7 +114,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
-    public List<BlogPost> filterBlogPosts(BlogPostSearchCriteria blogPostSearchCriteria) {
+    public List<BlogPost> filterBlogPosts(SearchBlogPostCriteria blogPostSearchCriteria) {
         String tagsSearchString = blogPostSearchCriteria.getTitle() + "%";
         return blogPostRepository.findByFilterValues(tagsSearchString, blogPostSearchCriteria.getCategories(), blogPostSearchCriteria.getTags());
     }
@@ -122,14 +123,69 @@ public class BlogPostServiceImpl implements BlogPostService {
     public BlogPost updateBlogPost(BlogPost blogPost) {
         return blogPostRepository.save(blogPost);
     }
-
+    
+    /**
+     * First finds BlogPost by Id.
+     * Then finds Category by Id and set it on BlogPost
+     * Finaly updates BlogPost updatedAt time and save it.
+     * @param updateBlogPostCriteria
+     * @return BlogPost
+     */
     @Override
-    public BlogPost updateBlogPostCategory(UpdateBlogPostCategoryCriteria updateBlogPostCategoryCriteria) {
+    public BlogPost updateBlogPostCategory(UpdateBlogPostCriteria updateBlogPostCriteria) {
         ZonedDateTime nowInUTC = ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC);
-        BlogPost blogPost = blogPostRepository.findById(updateBlogPostCategoryCriteria.getBlogPostId()).get();
-        Category category =  entityManager.find(Category.class, updateBlogPostCategoryCriteria.getCategoryId());
+        BlogPost blogPost = blogPostRepository.findById(updateBlogPostCriteria.getBlogPostId()).get();
+        
+        Category category = null;
+        if(updateBlogPostCriteria.getCategoryId() != null){
+            category = entityManager.find(Category.class, updateBlogPostCriteria.getCategoryId());
+        }
         
         blogPost.setCategory(category);
+        blogPost.setUpdatedAt(nowInUTC);
+   
+        return blogPostRepository.save(blogPost);
+    }
+
+    /**
+     * First finds BlogPost by Id.
+     * Then adds all tags from BlogPost that maches updateBlogPostCriteria.getTagIds() into blogPostTags list.
+     * Removes matching TagId from the updateBlogPostCriteria.getTagIds()
+     * 
+     * Then for each remaining updateBlogPostCriteria.getTagIds() finds Tag by Id and add it to blogPostTags list.
+     * Adds blogPostTags list to BlogPost
+     * 
+     * Finaly updates BlogPost updatedAt time and save it.
+     * @param updateBlogPostCriteria
+     * @return BlogPost
+     */
+    @Override
+    public BlogPost updateBlogPostTags(UpdateBlogPostCriteria updateBlogPostCriteria) {
+        ZonedDateTime nowInUTC = ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC);
+
+        BlogPost blogPost = blogPostRepository.findById(updateBlogPostCriteria.getBlogPostId()).get();
+        
+        List<Tag> blogPostTags = new ArrayList<Tag>();
+
+        //Find Tags that we should keep.
+        if(blogPost.getTags() != null) {
+            blogPost.getTags().stream().forEach(post -> {
+                if(updateBlogPostCriteria.getTagIds() != null && updateBlogPostCriteria.getTagIds().contains(post.getId())) {
+                    blogPostTags.add(post);
+                    updateBlogPostCriteria.getTagIds().remove(post.getId());
+                }
+            });
+        }
+        //Find and add new tags. 
+        if(updateBlogPostCriteria.getTagIds() != null) {
+            updateBlogPostCriteria.getTagIds().stream().forEach(tagId -> {
+                Tag newTag = entityManager.find(Tag.class, tagId);
+                blogPostTags.add(newTag);
+            });
+        }
+
+
+        blogPost.setTags(blogPostTags);
         blogPost.setUpdatedAt(nowInUTC);
    
         return blogPostRepository.save(blogPost);

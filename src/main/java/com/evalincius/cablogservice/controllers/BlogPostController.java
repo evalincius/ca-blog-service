@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.evalincius.cablogservice.models.BlogPost;
-import com.evalincius.cablogservice.models.BlogPostSearchCriteria;
-import com.evalincius.cablogservice.models.UpdateBlogPostCategoryCriteria;
+import com.evalincius.cablogservice.models.SearchBlogPostCriteria;
+import com.evalincius.cablogservice.models.UpdateBlogPostCriteria;
 import com.evalincius.cablogservice.services.BlogPostService;
 
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("api/blogpost")
@@ -38,8 +37,13 @@ public class BlogPostController {
     }
 
     @PutMapping("/category")
-    public BlogPost updateBlogPostCategory(@RequestBody UpdateBlogPostCategoryCriteria updateBlogPostCategoryCriteria) {
+    public BlogPost updateBlogPostCategory(@RequestBody UpdateBlogPostCriteria updateBlogPostCategoryCriteria) {
         return blogPostService.updateBlogPostCategory(updateBlogPostCategoryCriteria);
+    }
+
+    @PutMapping("/tags")
+    public BlogPost updateBlogPostTags(@RequestBody UpdateBlogPostCriteria updateBlogPostCategoryCriteria) {
+        return blogPostService.updateBlogPostTags(updateBlogPostCategoryCriteria);
     }
 
 
@@ -49,7 +53,7 @@ public class BlogPostController {
     }
 
     @GetMapping()
-    public List<BlogPost> filterBlogPosts(BlogPostSearchCriteria blogPostSearchCriteria) {
+    public List<BlogPost> filterBlogPosts(SearchBlogPostCriteria blogPostSearchCriteria) {
         return blogPostService.filterBlogPosts(blogPostSearchCriteria);
     }
 
