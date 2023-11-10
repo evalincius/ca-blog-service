@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.evalincius.cablogservice.models.ApiError;
 
-import jakarta.validation.ConstraintViolation;
 import lombok.extern.log4j.Log4j2;
 
 @ControllerAdvice

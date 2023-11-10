@@ -43,11 +43,11 @@ class BlogPostControllerTest {
 	private MockMvc mockMvc;
 
 	@MockBean
-	private BlogPostService service;
+	private BlogPostService mockBlogPostService;
 
 	@Test
 	void whenCallingGetAllBlogPosts_thenReturnJsonArray() throws Exception {
-		when(service.getAllBlogPosts()).thenReturn(Collections.emptyList());
+		when(mockBlogPostService.getAllBlogPosts()).thenReturn(Collections.emptyList());
 		this.mockMvc.perform(
 			get("/api/blogpost/all")
 			.header("X-User", "user")
@@ -56,24 +56,25 @@ class BlogPostControllerTest {
 
 	@Test
 	void whenCallingFilterBlogPosts_thenReturnJsonArray() throws Exception {
-		SearchBlogPostCriteria searchBlogPostCriteria = new SearchBlogPostCriteria();
-		searchBlogPostCriteria.setTitle("Test");
-		searchBlogPostCriteria.setCategories(Arrays.asList("Test1", "Test2"));
-		searchBlogPostCriteria.setTags(Arrays.asList("Test1", "Test2"));
+		SearchBlogPostCriteria searchBlogPostCriteria = SearchBlogPostCriteria.builder()
+		.title("Test")
+		.categories(Arrays.asList("Test1", "Test2"))
+		.tags(Arrays.asList("Test1", "Test2"))
+		.build();
 
-		when(service.filterBlogPosts(searchBlogPostCriteria)).thenReturn(Collections.emptyList());
+		when(mockBlogPostService.filterBlogPosts(searchBlogPostCriteria)).thenReturn(Collections.emptyList());
 		this.mockMvc.perform(
 			get("/api/blogpost?title=Test&categories=Test1&categories=Test2&tags=Test1&tags=Test2")
 			.header("X-User", "user")
 			).andDo(print()).andExpect(status().isOk());
 		
-		verify(service, times(1)).filterBlogPosts(searchBlogPostCriteria);
+		verify(mockBlogPostService, times(1)).filterBlogPosts(searchBlogPostCriteria);
 
 	}
 
 	@Test
 	void whenCallingDeleteBlogPost_whenUserIsAdmin_thenReturnOk() throws Exception {
-		doNothing().when(service).deleteBlogPost(1);
+		doNothing().when(mockBlogPostService).deleteBlogPost(1);
 		this.mockMvc.perform(
 			delete("/api/blogpost/1")
 			.header("X-User", "admin")
@@ -83,7 +84,7 @@ class BlogPostControllerTest {
 
 	@Test
 	void whenCallingDeleteBlogPost_whenUserIsUser_thenReturnForbiden() throws Exception {
-		doNothing().when(service).deleteBlogPost(1);
+		doNothing().when(mockBlogPostService).deleteBlogPost(1);
 		this.mockMvc.perform(
 			delete("/api/blogpost/1")
 			.header("X-User", "User")
@@ -92,11 +93,13 @@ class BlogPostControllerTest {
 
 	@Test
 	void givenCorrectLengthOfContent_whenCreateBlogPostCalled_thenReturnOk() throws Exception {
-		BlogPost mockBlogPost = new BlogPost();
 		String mockkContent = new String(new char[35]).replace('\0', 'a');
-		mockBlogPost.setContent(mockkContent);	
 
-		when(service.createBlogPost(mockBlogPost)).thenReturn(mockBlogPost);
+		BlogPost mockBlogPost = BlogPost.builder()
+		.content(mockkContent)
+		.build();
+		
+		when(mockBlogPostService.createBlogPost(mockBlogPost)).thenReturn(mockBlogPost);
 
 		RequestBuilder request = MockMvcRequestBuilders
             .post("/api/blogpost")
@@ -110,11 +113,13 @@ class BlogPostControllerTest {
 
 	@Test
 	void givenLengthOfContentMoreThan1024Chars_whenCreateBlogPostCalled_thenthrowException() throws Exception {
-		BlogPost mockBlogPost = new BlogPost();
 		String mockkContent = new String(new char[1025]).replace('\0', 'a');
-		mockBlogPost.setContent(mockkContent);	
 
-		when(service.createBlogPost(mockBlogPost)).thenReturn(mockBlogPost);
+		BlogPost mockBlogPost = BlogPost.builder()
+		.content(mockkContent)
+		.build();
+
+		when(mockBlogPostService.createBlogPost(mockBlogPost)).thenReturn(mockBlogPost);
 
 		RequestBuilder request = MockMvcRequestBuilders
             .post("/api/blogpost")
@@ -130,11 +135,13 @@ class BlogPostControllerTest {
 
 	@Test
 	void givenCorrectLengthOfContent_whenUpdateBlogPostCalled_thenReturnOk() throws Exception {
-		BlogPost mockBlogPost = new BlogPost();
 		String mockkContent = new String(new char[35]).replace('\0', 'a');
-		mockBlogPost.setContent(mockkContent);	
 
-		when(service.createBlogPost(mockBlogPost)).thenReturn(mockBlogPost);
+		BlogPost mockBlogPost = BlogPost.builder()
+		.content(mockkContent)
+		.build();
+
+		when(mockBlogPostService.createBlogPost(mockBlogPost)).thenReturn(mockBlogPost);
 
 		RequestBuilder request = MockMvcRequestBuilders
             .put("/api/blogpost")
@@ -148,11 +155,13 @@ class BlogPostControllerTest {
 
 	@Test
 	void givenLengthOfContentMoreThan1024Chars_whenUpdateBlogPostCalled_thenthrowException() throws Exception {
-		BlogPost mockBlogPost = new BlogPost();
 		String mockkContent = new String(new char[1025]).replace('\0', 'a');
-		mockBlogPost.setContent(mockkContent);	
+		
+		BlogPost mockBlogPost = BlogPost.builder()
+		.content(mockkContent)
+		.build();
 
-		when(service.createBlogPost(mockBlogPost)).thenReturn(mockBlogPost);
+		when(mockBlogPostService.createBlogPost(mockBlogPost)).thenReturn(mockBlogPost);
 
 		RequestBuilder request = MockMvcRequestBuilders
             .put("/api/blogpost")
@@ -168,10 +177,10 @@ class BlogPostControllerTest {
 
 	@Test
 	void whenUpdateBlogPostCategory_thenReturnOk() throws Exception {
-		UpdateBlogPostCriteria mockUpdateBlogPostCriteria = new UpdateBlogPostCriteria();
-		BlogPost mockBlogPost = new BlogPost();
+		UpdateBlogPostCriteria mockUpdateBlogPostCriteria = UpdateBlogPostCriteria.builder().build();
+		BlogPost mockBlogPost = BlogPost.builder().build();
 
-		when(service.updateBlogPostCategory(mockUpdateBlogPostCriteria)).thenReturn(mockBlogPost);
+		when(mockBlogPostService.updateBlogPostCategory(mockUpdateBlogPostCriteria)).thenReturn(mockBlogPost);
 
 		RequestBuilder request = MockMvcRequestBuilders
             .put("/api/blogpost/category")
@@ -186,10 +195,10 @@ class BlogPostControllerTest {
 
 	@Test
 	void whenUpdateBlogPostTags_thenReturnOk() throws Exception {
-		UpdateBlogPostCriteria mockUpdateBlogPostCriteria = new UpdateBlogPostCriteria();
-		BlogPost mockBlogPost = new BlogPost();
+		UpdateBlogPostCriteria mockUpdateBlogPostCriteria = UpdateBlogPostCriteria.builder().build();
+		BlogPost mockBlogPost = BlogPost.builder().build();
 
-		when(service.updateBlogPostCategory(mockUpdateBlogPostCriteria)).thenReturn(mockBlogPost);
+		when(mockBlogPostService.updateBlogPostCategory(mockUpdateBlogPostCriteria)).thenReturn(mockBlogPost);
 
 		RequestBuilder request = MockMvcRequestBuilders
             .put("/api/blogpost/tags")

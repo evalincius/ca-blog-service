@@ -115,12 +115,14 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     @Override
     public List<BlogPost> filterBlogPosts(SearchBlogPostCriteria blogPostSearchCriteria) {
+        // Add wildcard to title search
         String tagsSearchString = blogPostSearchCriteria.getTitle() + "%";
         return blogPostRepository.findByFilterValues(tagsSearchString, blogPostSearchCriteria.getCategories(), blogPostSearchCriteria.getTags());
     }
 
     @Override
     public BlogPost updateBlogPost(BlogPost blogPost) {
+        setOrUpdateAuditData(blogPost.getId(), blogPost);
         return blogPostRepository.save(blogPost);
     }
     
