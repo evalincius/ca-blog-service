@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "247a54c9-0fc8-4394-b559-1df657d3ea8c",
+		"_postman_id": "c81443c9-91fa-4fc5-9622-7fe85c8e23bc",
 		"name": "CA Blog",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "1599331"
@@ -54,7 +54,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"title\": \"Software Dev Best Practice\",\n    \"content\": \"This is where the content for the blog post goes.\",\n    \"image\": \"http://via.placeholder.com/640x360\",\n    \"author\": {\n        \"id\": 1,\n        \"firstName\":\"John\",\n        \"lastName\":\"Smith\",\n        \"profileImage\":\"http://via.placeholder.com/640x360\",\n        \"email\":\"js@ca.com,\",\n        \"bio\":\"Would be the best developer if there wouldn't be the better ones.\"\n    },\n    \"category\": {\n        \"name\": \"Testing\"\n    },\n    \"tags\": [\n        {   \n            \"id\": 1,\n            \"name\": \"Dependency Injection\"\n        },\n        {\n            \"name\": \"Mock\"\n        }\n    ]\n}",
+					"raw": "{\n    \"title\": \"Software Dev Best Practice Part 2\",\n    \"content\": \"This is where the content for the blog post goes.\",\n    \"image\": \"http://via.placeholder.com/640x360\",\n    \"author\": {\n        \"id\": 1,\n        \"firstName\":\"John\",\n        \"lastName\":\"Smith\",\n        \"profileImage\":\"http://via.placeholder.com/640x360\",\n        \"email\":\"js@ca.com,\",\n        \"bio\":\"Would be the best developer if there wouldn't be the better ones.\"\n    },\n    \"category\": {\n        \"name\": \"Testing\"\n    },\n    \"tags\": [\n        {   \n            \"id\": 1,\n            \"name\": \"Dependency Injection\"\n        },\n        {\n            \"name\": \"Mock\"\n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -83,7 +83,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"title\": \"Software Development Best Practice\",\n    \"content\": \"This is where the content for the blog post goes.\",\n    \"image\": \"http://via.placeholder.com/640x360\"\n}",
+					"raw": "{\n    \"id\": \"1\",\n    \"title\": \"Software Development Best Practice\",\n    \"content\": \"This is where the content for the blog post goes.\",\n    \"image\": \"http://via.placeholder.com/640x360\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -204,7 +204,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:8090/api/blogpost",
+					"raw": "http://localhost:8090/api/blogpost?categories=Testing&tags=Dependency Injection&title=Software",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -222,8 +222,7 @@
 						},
 						{
 							"key": "categories",
-							"value": "Testing",
-							"disabled": true
+							"value": "Testing"
 						},
 						{
 							"key": "tags",
@@ -232,8 +231,7 @@
 						},
 						{
 							"key": "tags",
-							"value": "Dependency Injection",
-							"disabled": true
+							"value": "Dependency Injection"
 						},
 						{
 							"key": "tags",
@@ -242,8 +240,7 @@
 						},
 						{
 							"key": "title",
-							"value": "Software",
-							"disabled": true
+							"value": "Software"
 						}
 					]
 				}
