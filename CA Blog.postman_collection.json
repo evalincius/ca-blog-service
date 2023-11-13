@@ -1,0 +1,281 @@
+{
+	"info": {
+		"_postman_id": "247a54c9-0fc8-4394-b559-1df657d3ea8c",
+		"name": "CA Blog",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1599331"
+	},
+	"item": [
+		{
+			"name": "Create Blog Post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-User",
+						"value": "user",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Software Dev Best Practice\",\n    \"content\": \"This is where the content for the blog post goes.\",\n    \"image\": \"http://via.placeholder.com/640x360\",\n    \"author\": {\n        \"firstName\":\"John\",\n        \"lastName\":\"Smith\",\n        \"profileImage\":\"http://via.placeholder.com/640x360\",\n        \"email\":\"js@ca.com,\",\n        \"bio\":\"Would be the best developer if there wouldn't be the better ones.\"\n    },\n    \"category\": {\n        \"name\": \"Development\"\n    },\n    \"tags\": [\n        {\n            \"name\": \"Dependency Injection\"\n        },\n        {\n            \"name\": \"POJO\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/api/blogpost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"blogpost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Blog Post With Duplicate Tag",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-User",
+						"value": "user",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Software Dev Best Practice\",\n    \"content\": \"This is where the content for the blog post goes.\",\n    \"image\": \"http://via.placeholder.com/640x360\",\n    \"author\": {\n        \"id\": 1,\n        \"firstName\":\"John\",\n        \"lastName\":\"Smith\",\n        \"profileImage\":\"http://via.placeholder.com/640x360\",\n        \"email\":\"js@ca.com,\",\n        \"bio\":\"Would be the best developer if there wouldn't be the better ones.\"\n    },\n    \"category\": {\n        \"name\": \"Testing\"\n    },\n    \"tags\": [\n        {   \n            \"id\": 1,\n            \"name\": \"Dependency Injection\"\n        },\n        {\n            \"name\": \"Mock\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/api/blogpost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"blogpost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Blog Post",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Software Development Best Practice\",\n    \"content\": \"This is where the content for the blog post goes.\",\n    \"image\": \"http://via.placeholder.com/640x360\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/api/blogpost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"blogpost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Blog Post Category",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"blogPostId\": 1,\n    \"categoryId\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/api/blogpost/category",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"blogpost",
+						"category"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Blog Post Tags",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"blogPostId\": 1,\n    \"tagIds\": [2]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8090/api/blogpost/tags",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"blogpost",
+						"tags"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Blog Posts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-User",
+						"value": "user",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/api/blogpost/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"blogpost",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Filter Blog Posts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-User",
+						"value": "user",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/api/blogpost",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"blogpost"
+					],
+					"query": [
+						{
+							"key": "categories",
+							"value": "Development",
+							"disabled": true
+						},
+						{
+							"key": "categories",
+							"value": "Testing",
+							"disabled": true
+						},
+						{
+							"key": "tags",
+							"value": "DB",
+							"disabled": true
+						},
+						{
+							"key": "tags",
+							"value": "Dependency Injection",
+							"disabled": true
+						},
+						{
+							"key": "tags",
+							"value": "POJO",
+							"disabled": true
+						},
+						{
+							"key": "title",
+							"value": "Software",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Blog Post",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "X-User",
+						"value": "admin",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8090/api/blogpost/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"api",
+						"blogpost",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
