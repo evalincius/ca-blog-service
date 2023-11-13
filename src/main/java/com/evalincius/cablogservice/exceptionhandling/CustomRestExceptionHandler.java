@@ -39,10 +39,17 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public final ResponseEntity<Object> handleNotFoundException(SQLIntegrityConstraintViolationException ex, WebRequest request) {
-      ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),  ex.getMessage());
-      log.error( "Databse Error:", ex );
-      return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
-    }
+  public final ResponseEntity<Object> handleNotFoundException(SQLIntegrityConstraintViolationException ex, WebRequest request) {
+    ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),  ex.getMessage());
+    log.error( "Databse Error:", ex );
+    return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public final ResponseEntity<Object> handleIlegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+    ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),  ex.getMessage());
+    log.error( "Illegal Argument Error:", ex );
+    return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+  }
   
 }

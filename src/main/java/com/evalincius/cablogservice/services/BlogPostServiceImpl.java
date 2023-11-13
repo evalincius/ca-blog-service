@@ -32,6 +32,9 @@ public class BlogPostServiceImpl implements BlogPostService {
     @Override
     @Transactional
     public BlogPost createBlogPost(BlogPost blogPost) {
+        if(blogPost.getId() != null){
+            throw new IllegalArgumentException("BlogPost id should be null when creating a new BlogPost");
+        }
         blogPost.setAuthor(persistAuthorIfNotExists(blogPost.getAuthor()));
         blogPost.setCategory(persistCategoryIfNotExists(blogPost.getCategory()));
         blogPost.setTags(persistTagsIfNotExists(blogPost.getTags()));
@@ -55,15 +58,18 @@ public class BlogPostServiceImpl implements BlogPostService {
      * @return Category
      */
     private Category persistCategoryIfNotExists(Category currentCategory){
-       
         if(currentCategory != null){
-            Category category = currentCategory.getId() != null ? entityManager.find(Category.class, currentCategory.getId()): null;
-            setOrUpdateAuditData(currentCategory.getId(), currentCategory);
-            if(category != null ) {
-                currentCategory = category;
-            } else{
+            if(currentCategory.getId() != null){
+                Category category = entityManager.find(Category.class, currentCategory.getId());
+                if(category != null){
+                    currentCategory = category;
+                } else{
+                    throw new IllegalArgumentException("Category with id " + currentCategory.getId() + " does not exist");
+                }
+            }else{
+                setOrUpdateAuditData(currentCategory.getId(), currentCategory);
                 entityManager.persist(currentCategory);
-            }
+            }         
         }
         return currentCategory;
     }
@@ -75,12 +81,15 @@ public class BlogPostServiceImpl implements BlogPostService {
      */
     private Author persistAuthorIfNotExists(Author currentAuthor){
         if(currentAuthor != null){
-            Author author = currentAuthor.getId() != null ? entityManager.find(Author.class, currentAuthor.getId()): null;
-            setOrUpdateAuditData(currentAuthor.getId(), currentAuthor);
-
-            if(author != null ) {
-                currentAuthor = author;
-            } else{
+            if(currentAuthor.getId() != null){
+                Author author = entityManager.find(Author.class, currentAuthor.getId());
+                if(author != null){
+                    currentAuthor = author;
+                } else{
+                    throw new IllegalArgumentException("Author with id " + currentAuthor.getId() + " does not exist");
+                }
+            }else{
+                setOrUpdateAuditData(currentAuthor.getId(), currentAuthor);
                 entityManager.persist(currentAuthor);
             }
         }
@@ -95,11 +104,15 @@ public class BlogPostServiceImpl implements BlogPostService {
     private List<Tag> persistTagsIfNotExists(List<Tag> listOfCurrentTags){
         if(listOfCurrentTags != null){
             listOfCurrentTags = listOfCurrentTags.stream().map(currentTag ->{
-                Tag tag = currentTag.getId() != null ? entityManager.find(Tag.class, currentTag.getId()): null;
-                setOrUpdateAuditData(currentTag.getId(), currentTag);
-                if(tag != null ) {
-                    currentTag = tag;
-                } else{
+                if(currentTag.getId() != null){
+                    Tag tag = entityManager.find(Tag.class, currentTag.getId());
+                    if(tag != null){
+                        currentTag = tag;
+                    } else{
+                        throw new IllegalArgumentException("Tag with id " + currentTag.getId() + " does not exist");
+                    }
+                }else{
+                    setOrUpdateAuditData(currentTag.getId(), currentTag);
                     entityManager.persist(currentTag);
                 }
                 return currentTag;
@@ -121,9 +134,23 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     @Override
+    @Transactional
     public BlogPost updateBlogPost(BlogPost blogPost) {
-        setOrUpdateAuditData(blogPost.getId(), blogPost);
-        return blogPostRepository.save(blogPost);
+        if(blogPost != null && blogPost.getId() != null) {
+            ZonedDateTime nowInUTC = ZonedDateTime.now().withZoneSameInstant(ZoneOffset.UTC);
+            BlogPost persistedBlogPost = entityManager.find(BlogPost.class, blogPost.getId());
+            if(persistedBlogPost != null) {
+                persistedBlogPost.setTitle(blogPost.getTitle());
+                persistedBlogPost.setContent(blogPost.getContent());
+                persistedBlogPost.setUpdatedAt(nowInUTC);
+                return entityManager.merge(persistedBlogPost);
+            }else{
+                throw new IllegalArgumentException("BlogPost with given Id cannot be found");
+            }
+            
+        }else{
+            throw new IllegalArgumentException("BlogPost Id cannot be null");
+        }
     }
     
     /**

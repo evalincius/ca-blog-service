@@ -3,7 +3,9 @@ package com.evalincius.cablogservice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -95,6 +97,27 @@ public class BlogPostServiceImplTest {
         assertEquals(2, results.size());
         assertEquals(blogPosts, results);
     }
+    @Test
+    public void givenBlogPostIdProvided_whenCallingCreateBlogPost_thenThrowIllegalArgumentException() {
+        BlogPost mockBlogPost = BlogPost.builder()
+            .id(1)
+            .title("mock title")
+            .content("mock content")
+            .category(Category.builder().name("mock category").build())
+            .tags(Collections.singletonList(Tag.builder().name("mock tag").build()))
+            .author(Author.builder().firstName("mock author").build())
+            .build();
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                testee.createBlogPost(mockBlogPost);
+            });
+
+            verify(mockEntityManager, never()).persist(mockBlogPost.getCategory());
+            verify(mockEntityManager, never()).persist(mockBlogPost.getTags().get(0));
+            verify(mockEntityManager, never()).persist(mockBlogPost.getAuthor());
+            verify(mockBlogPostRepository, never()).save(mockBlogPost);
+
+            assertEquals("BlogPost id should be null when creating a new BlogPost", exception.getMessage());
+    }
 
     @Test
     public void givenCategoryTagAndAuthorNotYetExist_whenCallingCreateBlogPost_thenReturnCreatedBlogPost() {
@@ -167,18 +190,126 @@ public class BlogPostServiceImplTest {
     }
 
     @Test
+    public void givenCategoryIdDoesNotExist_whenCallingCreateBlogPost_thenReturnCreatedBlogPost() {
+        BlogPost mockBlogPost = BlogPost.builder()
+            .title("mock title")
+            .content("mock content")
+            .category(Category.builder().id(1).name("mock category").build())
+            .tags(Collections.singletonList(Tag.builder().name("mock tag").build()))
+            .author(Author.builder().firstName("mock author").build())
+            .build();
+            
+            when(mockEntityManager.find(Category.class, mockBlogPost.getCategory().getId())).thenReturn(null);
+
+            
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                testee.createBlogPost(mockBlogPost);
+            });
+            verify(mockEntityManager, never()).persist(mockBlogPost.getCategory());
+            verify(mockEntityManager, never()).persist(mockBlogPost.getTags().get(0));
+            verify(mockEntityManager, times(1)).persist(mockBlogPost.getAuthor());
+            
+            verify(mockBlogPostRepository, never()).save(mockBlogPost);
+            assertEquals("Category with id 1 does not exist", exception.getMessage());
+    }
+    @Test
+    public void givenTagIdDoesNotExist_whenCallingCreateBlogPost_thenReturnCreatedBlogPost() {
+        BlogPost mockBlogPost = BlogPost.builder()
+            .title("mock title")
+            .content("mock content")
+            .category(Category.builder().name("mock category").build())
+            .tags(Collections.singletonList(Tag.builder().id(1).name("mock tag").build()))
+            .author(Author.builder().firstName("mock author").build())
+            .build();
+            
+            when(mockEntityManager.find(Tag.class, mockBlogPost.getTags().get(0).getId())).thenReturn(null);
+
+            
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                testee.createBlogPost(mockBlogPost);
+            });
+            verify(mockEntityManager, times(1)).persist(mockBlogPost.getCategory());
+            verify(mockEntityManager, never()).persist(mockBlogPost.getTags().get(0));
+            verify(mockEntityManager, times(1)).persist(mockBlogPost.getAuthor());
+            
+            verify(mockBlogPostRepository, never()).save(mockBlogPost);
+            assertEquals("Tag with id 1 does not exist", exception.getMessage());
+    }
+
+    @Test
+    public void givenAuthorIdDoesNotExist_whenCallingCreateBlogPost_thenReturnCreatedBlogPost() {
+        BlogPost mockBlogPost = BlogPost.builder()
+            .title("mock title")
+            .content("mock content")
+            .category(Category.builder().name("mock category").build())
+            .tags(Collections.singletonList(Tag.builder().name("mock tag").build()))
+            .author(Author.builder().id(1).firstName("mock author").build())
+            .build();
+            
+            when(mockEntityManager.find(Author.class, mockBlogPost.getAuthor().getId())).thenReturn(null);
+
+            
+            Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                testee.createBlogPost(mockBlogPost);
+            });
+            verify(mockEntityManager, never()).persist(mockBlogPost.getCategory());
+            verify(mockEntityManager, never()).persist(mockBlogPost.getTags().get(0));
+            verify(mockEntityManager, never()).persist(mockBlogPost.getAuthor());
+            
+            verify(mockBlogPostRepository, never()).save(mockBlogPost);
+            assertEquals("Author with id 1 does not exist", exception.getMessage());
+    }
+
+    @Test
+    public void givenBlogPostWithIdDoesNotExist_whenCallingupdateBlogPost_thenThrowException() {
+        BlogPost mockBlogPost = BlogPost.builder()
+            .id(1)
+            .title("mock title")
+            .content("mock content")
+            .build();
+        
+        when(mockEntityManager.find(BlogPost.class, mockBlogPost.getId())).thenReturn(null);
+
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                testee.updateBlogPost(mockBlogPost);
+        });
+
+        verify(mockBlogPostRepository, never()).save(mockBlogPost);
+
+        assertEquals("BlogPost with given Id cannot be found", exception.getMessage());
+    }
+
+    @Test
+    public void givenBlogPostWithoutId_whenCallingupdateBlogPost_thenThrowException() {
+        BlogPost mockBlogPost = BlogPost.builder()
+            .title("mock title")
+            .content("mock content")
+            .build();
+        
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+                testee.updateBlogPost(mockBlogPost);
+        });
+
+        verify(mockBlogPostRepository, never()).save(mockBlogPost);
+
+        assertEquals("BlogPost Id cannot be null", exception.getMessage());
+    }
+
+    @Test
     public void whenCallingupdateBlogPost_thenReturnUpdatedBlogPost() {
         BlogPost mockBlogPost = BlogPost.builder()
             .id(1)
             .title("mock title")
             .content("mock content")
             .build();
+        when(mockEntityManager.find(BlogPost.class, mockBlogPost.getId())).thenReturn(mockBlogPost);
 
-        when(mockBlogPostRepository.save(mockBlogPost)).thenReturn(mockBlogPost);
+        when(mockEntityManager.merge(mockBlogPost)).thenReturn(mockBlogPost);
 
         BlogPost result = testee.updateBlogPost(mockBlogPost);
 
-        verify(mockBlogPostRepository, times(1)).save(mockBlogPost);
+        verify(mockEntityManager, times(1)).merge(mockBlogPost);
 
         assertNotNull(result.getUpdatedAt());
     }
