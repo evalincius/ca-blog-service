@@ -10,7 +10,7 @@ public class OpenApiConfig {
     public GroupedOpenApi controllerApi() {
         return GroupedOpenApi.builder()
                 .group("controller-api")
-                .packagesToScan("com.evalincius.cablogservice") // Specify the package to scan
+                .packagesToScan("com.evalincius.cablogservice")
                 .build();
     }
 }

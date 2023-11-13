@@ -1,0 +1,28 @@
+services:
+  mysqldb:
+    platform: linux/x86_64
+    image: mysql:5.7
+    restart: unless-stopped
+    container_name: mysqldb
+    environment:
+      MYSQL_DATABASE: cablogdb
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - 3306:3306
+    volumes:
+      - db-data:/var/lib/mysql
+  api:
+    container_name: spring-boot-api
+    depends_on: 
+      - mysqldb
+    restart: always
+    build: .
+    ports:
+      - 8090:8090
+    expose:
+      - 8090
+    command: mvn clean spring-boot:run
+volumes:
+  db-data:
+  

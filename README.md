@@ -7,7 +7,6 @@ CA Blog Service is an application that provides a set of REST APIs to manage a s
 ## Dependencies
 
 -   Lombok
--   MongoDB
 -   Actuator
 -   Swagger
 
@@ -27,6 +26,11 @@ TBA
 
 -   To install and launch MySQL please follow official guide:
     https://dev.mysql.com/doc/mysql-getting-started/en/
+
+-   Homebrew
+    -    brew services start mysql
+    -    brew services stop mysql
+    -    brew services restart mysql
 
 ## Actuator 
 -   http://localhost:8090/actuator

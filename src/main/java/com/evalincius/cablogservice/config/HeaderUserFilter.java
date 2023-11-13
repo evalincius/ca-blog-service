@@ -19,20 +19,18 @@ public class HeaderUserFilter extends GenericFilterBean {
 
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
-        String path = req.getRequestURI();
-        String requestMethod = req.getMethod();
 
-        if(path.startsWith("/api") == false){
-            chain.doFilter(request, response);
+        if(!req.getRequestURI().startsWith("/api")){
+            filterChain.doFilter(request, response);
             return;
         }
-
-        String user = req.getHeader("X-User") == null ? "" : req.getHeader("X-User");
+        String requestHeader = req.getHeader("X-User");
+        String user = requestHeader != null ? requestHeader : "";
         log.info("User: " + user);
 
-        if(requestMethod.equalsIgnoreCase("DELETE") && !user.equals("admin")){
+        if(req.getMethod().equalsIgnoreCase("DELETE") && !user.equals("admin")){
             HttpServletResponse resp = (HttpServletResponse) response;
             String error = "Unouthorized access";
 
@@ -41,7 +39,7 @@ public class HeaderUserFilter extends GenericFilterBean {
             response.setContentLength(error .length());
             response.getWriter().write(error);
         }else{
-            chain.doFilter(request, response);
+            filterChain.doFilter(request, response);
         }
 
     }

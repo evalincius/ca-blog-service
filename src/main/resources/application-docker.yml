@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:mysql://mysqldb:3306/cablogdb?createDatabaseIfNotExist=true&useSSL=false
+    username: root
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update

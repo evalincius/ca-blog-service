@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -43,10 +42,6 @@ public class BlogPostServiceImplTest {
     @InjectMocks   
     private BlogPostServiceImpl testee;
 
-    @BeforeAll
-    public static void setup() {
-        
-    }
     @Test
     public void whenCallingGetAllBlogPosts_thenReturnCorrectBlogPosts() {
         List<BlogPost> blogPosts = new ArrayList<BlogPost>();
@@ -75,6 +70,25 @@ public class BlogPostServiceImplTest {
         blogPosts.add(BlogPost.builder().title("mock title 2").build());
         
         when(mockBlogPostRepository.findByFilterValues(mockBlogPostCriteria.getTitle()+ "%", mockBlogPostCriteria.getCategories(), mockBlogPostCriteria.getTags())).thenReturn(blogPosts);
+
+        List<BlogPost> results = testee.filterBlogPosts(mockBlogPostCriteria);
+
+        assertEquals(2, results.size());
+        assertEquals(blogPosts, results);
+    }
+
+    @Test
+    public void givenTitleIsNull_whenCallingFilterBlogPosts_thenReturnCorrectBlogPosts() {
+        SearchBlogPostCriteria mockBlogPostCriteria = SearchBlogPostCriteria.builder()
+            .categories(Collections.singletonList("mock category"))
+            .tags(Collections.singletonList("mock tag"))
+            .build();
+
+        List<BlogPost> blogPosts = new ArrayList<BlogPost>();
+        blogPosts.add(BlogPost.builder().title("mock title 1").build());
+        blogPosts.add(BlogPost.builder().title("mock title 2").build());
+        
+        when(mockBlogPostRepository.findByFilterValues(null, mockBlogPostCriteria.getCategories(), mockBlogPostCriteria.getTags())).thenReturn(blogPosts);
 
         List<BlogPost> results = testee.filterBlogPosts(mockBlogPostCriteria);
 

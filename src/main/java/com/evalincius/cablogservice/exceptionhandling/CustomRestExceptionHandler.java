@@ -24,18 +24,18 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
   @Override
-  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,HttpStatusCode status, WebRequest request) {
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers,HttpStatusCode status, WebRequest request) {
 
     List<String> errors = new ArrayList<String>();
-    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+    for (FieldError error : exception.getBindingResult().getFieldErrors()) {
         errors.add(error.getField() + ": " + error.getDefaultMessage());
     }
-    for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
+    for (ObjectError error : exception.getBindingResult().getGlobalErrors()) {
         errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
     }
-    ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
-      log.error( "Validation Error:", ex );
-    return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
+    ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, exception.getLocalizedMessage(), errors);
+      log.error( "Validation Error:", exception );
+    return handleExceptionInternal(exception, apiError, headers, apiError.getStatus(), request);
   }
 
   @ExceptionHandler(SQLIntegrityConstraintViolationException.class)

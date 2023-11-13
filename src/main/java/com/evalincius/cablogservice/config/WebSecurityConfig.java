@@ -19,9 +19,9 @@ public class WebSecurityConfig {
     }
 
      @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
             .addFilterBefore(headerUserFilter,AbstractPreAuthenticatedProcessingFilter.class);
-        return http.build();
+        return httpSecurity.build();
     }
 }
